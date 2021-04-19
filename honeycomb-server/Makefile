@@ -1,2 +1,2 @@
 build:
-	@docker build . -t honeycomb-server:latest
+	@docker build . -t node2honeycomb/honeycomb-server:latest
