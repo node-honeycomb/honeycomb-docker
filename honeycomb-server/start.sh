@@ -1,10 +1,8 @@
-su admin
-cd /root && rpm -i ./honeycomb-server.rpm
-cd /home/admin/honeycomb/bin
-server_ctl start
+#!/bin/bash
 
-while true; do
-  sleep 10
-done
+set -e
 
+echo "starting honeycomb server..."
+su admin && cd /home/admin/honeycomb/bin && server_ctl start
 
+sleep inf
