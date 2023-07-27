@@ -8,7 +8,9 @@ if [ ! -d /home/admin/honeycomb ]; then
 fi
 
 # patch server_ctl
-mv /tmp/server_ctl /home/admin/honeycomb/bin/server_ctl
+if [ -f /tmp/server_ctl ]; then
+    mv /tmp/server_ctl /home/admin/honeycomb/bin/server_ctl
+fi
 
 chown admin:admin -R /home/admin/honeycomb
 
@@ -20,7 +22,8 @@ fi
 echo "starting honeycomb server..."
 
 su admin -c "/home/admin/honeycomb/bin/server_ctl start"
-
-cd /home/admin/apps && control publish ./honeycomb-console_$HONEYCOMB_VERSION.tgz
+if ! ls /home/admin/honeycomb/run/appsRoot/honeycomb-console* > /dev/null 2>&1; then
+    cd /home/admin/apps && control publish ./honeycomb-console_$HONEYCOMB_VERSION.tgz
+fi
 
 sleep inf
