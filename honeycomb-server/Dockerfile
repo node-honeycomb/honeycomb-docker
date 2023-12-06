@@ -10,7 +10,6 @@ RUN REPO_FILE=Centos-7.repo && \
     if [ `arch` = 'aarch64' -o `arch` = 'arm64' ]; then REPO_FILE=Centos-altarch-7.repo; fi && \
     curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/$REPO_FILE && \
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
-    sed -i 's/mirrors.aliyun.com/mirrors.ustc.edu.cn/g' /etc/yum.repos.d/CentOS-Base.repo && \
     yum update -y && \
     yum install -y perl cronie make wget
 
@@ -19,6 +18,18 @@ RUN REPO_FILE=Centos-7.repo && \
 
 COPY honeycomb-server.rpm /tmp/honeycomb-server.rpm
 RUN rpm -i /tmp/honeycomb-server.rpm
+
+# 升级 node 版本
+RUN wget -nv https://nodejs.org/dist/v12.13.0/node-v12.13.0-linux-x64.tar.xz && \
+    tar xf node-v12.13.0-linux-x64.tar.xz && \
+    mv node-v12.13.0-linux-x64 node && \
+    rm -rf node-v12.13.0-linux-x64.tar.xz && \
+    tar zxf /home/admin/honeycomb/target/honeycomb.tgz && \
+    rm -rf honeycomb/node_modules/node && \
+    mv node honeycomb/node_modules/node && \
+    tar zcf honeycomb.tgz honeycomb && \
+    mv honeycomb.tgz /home/admin/honeycomb/target/honeycomb.tgz && \
+    chown admin:admin /home/admin/honeycomb/target/honeycomb.tgz
 
 # set locale
 COPY lang.sh /etc/profile.d
